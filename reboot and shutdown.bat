@@ -1,5 +1,5 @@
-rem Turn off console output.
 @echo off
+rem Turn off console output.
 
 rem Variables used exists only in this instance.
 setlocal
