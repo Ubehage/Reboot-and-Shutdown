@@ -3,7 +3,7 @@
 This is a small .bat script written for my own needs.  
 It is very simple. It reboots the computer and then shuts down.
 
-This script does 3 things:  
+This script does 5 things:  
 - Writes a single byte to the registry, to know that it has just ran.  
 - Restarts the computer.  
 - Wait for Windows to start up and for the user to log in.  
