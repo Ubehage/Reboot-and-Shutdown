@@ -45,7 +45,7 @@ Private Declare Function InitiateShutdown Lib "advapi32.dll" Alias "InitiateShut
 Public Sub TriggerShutdown(Optional DoReboot As Boolean = False)
   Call EnableShutdownPrivileges
   If IsWindowsVistaOrHigher() = True Then
-    Call InitiateShutdown(0&, 0&, 0&, IIf(DoReboot, SHUTDOWN_RESTART, SHUTDOWN_POWEROFF), SHTDN_REASON_MAJOR_OPERATINGSYSTEM Or SHTDN_REASON_MINOR_UPGRADE)
+    Call InitiateShutdown(0&, 0&, 0&, SHUTDOWN_INSTALL_UPDATES And IIf(DoReboot, SHUTDOWN_RESTART, SHUTDOWN_POWEROFF), SHTDN_REASON_MAJOR_OPERATINGSYSTEM Or SHTDN_REASON_MINOR_UPGRADE)
   Else
     Call ExitWindowsEx(IIf(DoReboot, EWX_REBOOT, EWX_SHUTDOWN), 0&)
   End If
