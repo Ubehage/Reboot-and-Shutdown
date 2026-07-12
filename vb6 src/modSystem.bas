@@ -23,6 +23,12 @@ Private Const ICC_NATIVEFNTCTL_CLASS  As Long = 2000
 Private Const ICC_STANDARD_CLASSES  As Long = 4000
 Private Const ICC_LINK_CLASS  As Long = 8000
 
+Private Const HWND_NOTOPMOST  As Long = -2
+Private Const HWND_TOPMOST  As Long = -1
+Private Const SWP_NOMOVE  As Long = &H2
+Private Const SWP_NOSIZE  As Long = &H1
+Private Const SWP_SETWINDOWPOS  As Long = SWP_NOSIZE Or SWP_NOMOVE
+
 Public Enum COMMONCONTROLS_CLASSES
   ccListView_Classes = ICC_LISTVIEW_CLASSES
   ccTreeView_Classes = ICC_TREEVIEW_CLASSES
@@ -58,6 +64,18 @@ Private Type OSVERSIONINFO
   szCSDVersion(0 To 127) As Byte
 End Type
 
+Public Type POINTAPI
+  X As Long
+  Y As Long
+End Type
+
+Public Type RECT
+  Left As Long
+  Top As Long
+  Right As Long
+  Bottom As Long
+End Type
+
 Private Declare Function RtlGetVersion Lib "ntdll.dll" (lpVersionInformation As OSVERSIONINFO) As Long
 
 Private Declare Sub InitCommonControls9x Lib "comctl32" Alias "InitCommonControls" ()
@@ -67,6 +85,18 @@ Public Declare Function RegOpenKeyEx Lib "advapi32.dll" Alias "RegOpenKeyExA" (B
 Public Declare Function RegSetValueEx Lib "advapi32.dll" Alias "RegSetValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal Reserved As Long, ByVal dwType As Long, ByVal lpData As String, ByVal cbData As Long) As Long
 Public Declare Function RegQueryValueEx Lib "advapi32.dll" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, lpType As Long, lpData As Any, lpcbData As Long) As Long
 Public Declare Function RegCloseKey Lib "advapi32.dll" (ByVal hKey As Long) As Long
+
+Private Declare Function SetWindowPos Lib "user32.dll" (ByVal hWnd As Long, ByVal hWndInsertAfter As Long, ByVal X As Long, ByVal Y As Long, ByVal cX As Long, ByVal cY As Long, ByVal wFlags As Long) As Long
+
+Public Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
+Public Declare Function SetCapture Lib "user32" (ByVal hWnd As Long) As Long
+Public Declare Function ReleaseCapture Lib "user32" () As Long
+
+Public Declare Sub GetWindowRect Lib "user32" (ByVal hWnd As Long, ByRef WindowRect As RECT)
+Public Declare Function WindowFromPoint Lib "user32" (ByVal X As Long, ByVal Y As Long) As Long
+Public Declare Function ClientToScreen Lib "user32" (ByVal hWnd As Long, lpPoint As POINTAPI) As Long
+Public Declare Function ScreenToClient Lib "user32" (ByVal hWnd As Long, ByRef lpPoint As POINTAPI) As Long
+Public Declare Function GetClientRect Lib "user32" (ByVal hWnd As Long, lpRect As RECT) As Long
 
 Public Function InitCommonControls(Optional ccFlags As COMMONCONTROLS_CLASSES = ccAll_Classes) As Boolean
   Dim icc As tagINITCOMMONCONTROLSEX
@@ -102,4 +132,22 @@ Public Function FixPath(Path As String) As String
     r = Left$(r, (Len(r) - 1))
   Wend
   FixPath = r
+End Function
+
+Public Sub WindowOnTop(hWnd As Long, OnTop As Boolean)
+  Dim wFlags As Long
+  If OnTop Then
+    wFlags = HWND_TOPMOST
+  Else
+    wFlags = HWND_NOTOPMOST
+  End If
+  SetWindowPos hWnd, wFlags, 0&, 0&, 0&, 0&, SWP_SETWINDOWPOS
+End Sub
+
+Public Function IsPointInRect(pRect As RECT, pPoint As POINTAPI) As Boolean
+  With pRect
+    If (pPoint.X >= .Left And pPoint.X <= .Right) Then
+      If (pPoint.Y >= .Top And pPoint.Y <= .Bottom) Then IsPointInRect = True
+    End If
+  End With
 End Function

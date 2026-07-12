@@ -1,4 +1,4 @@
-# Reboot and Shutdown (1.0.1)
+# Reboot and Shutdown (1.1.0)
 
 This is a small program, written for my own needs.  
 It comes in 2 flavors: A batch script, and a win32 executable written in VB6.  
@@ -18,6 +18,9 @@ It's that simple.
 The files can be run from any location. 100% portable.  
 
 ## Recent changes and fixes
+### Changes to the application:
+- 1.1.0
+  - Added a short delay of 5 seconds before shutting down after reboot, with a visual countdown.
 - 1.0.1
   -Program would shut down instead of rebooting on Windows 10/11.
   
