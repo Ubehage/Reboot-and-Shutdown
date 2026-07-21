@@ -21,10 +21,13 @@ Begin VB.Form frmCountdown
       Left            =   5460
       TabIndex        =   1
       Top             =   2490
-      Width           =   1365
-      _ExtentX        =   1429
+      Width           =   1575
+      _ExtentX        =   2778
       _ExtentY        =   556
       Caption         =   "Abort countdown"
+      BackColor       =   2105376
+      ButtonStyle     =   4
+      FontBold        =   -1  'True
    End
    Begin VB.Label lblCountdown 
       AutoSize        =   -1  'True
@@ -107,7 +110,8 @@ Private Sub CountdownTimer_Timer()
   CountdownTimer.Enabled = False
   If (Now >= EndTime Or CancelCountdown = True) Then
     Unload Me
-    If CancelCountdown = False Then TriggerShutdown False
+    If CancelCountdown = True Then Exit Sub
+    TriggerShutdown False
   Else
     UpdateCountdownText
   End If

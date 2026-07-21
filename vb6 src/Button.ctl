@@ -67,6 +67,8 @@ Dim m_KeyIsDown As Boolean
 Dim ButtonRect As RECT
 Dim TextPos As POINTAPI
 
+Dim ControlTerminated As Boolean
+
 Public Event Click()
 
 Public Property Get Caption() As String
@@ -361,9 +363,7 @@ Private Sub DoClickEvent()
 End Sub
 
 Private Function CanInteractNow() As Boolean
-  On Error Resume Next
   CanInteractNow = UserControl.Ambient.UserMode And m_Enabled And UserControl.Extender.Visible And UserControl.hWnd <> 0
-  On Error GoTo 0
 End Function
 
 Private Sub UserControl_InitProperties()
@@ -455,6 +455,10 @@ End Sub
 
 Private Sub UserControl_Show()
   Refresh
+End Sub
+
+Private Sub UserControl_Terminate()
+  ControlTerminated = True
 End Sub
 
 Private Sub UserControl_WriteProperties(PropBag As PropertyBag)
